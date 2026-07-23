@@ -356,16 +356,17 @@
 </head>
 <body class="normal-mode">
   <div class="page" id="pageRoot">
-    <div class="hero">
-      <div>
+    <!-- Hero section: contains page title, description, and mode switch controls -->
         <h1>Chart.js Demo</h1>
         <p>Toggle between the production-style chart experience and a future-ready modern interface with a refreshed palette, glassmorphism, and improved UI details.</p>
       </div>
 
+      <!-- Mode buttons let the user switch between normal and future chart styles -->
       <div class="controls" role="group" aria-label="Chart mode selector">
         <button id="normalBtn" class="active" type="button">Normal</button>
         <button id="futureBtn" type="button">Future</button>
       </div>
+      <!-- Future-only toggles: shown when future mode is active -->
       <div class="goal-control">
         <label>
           <input id="fixedGoalLineToggle" type="checkbox" />
@@ -414,6 +415,7 @@
       return date >= minDate && date <= maxDate;
     }
 
+    // Aggregate order lines into monthly totals for charting.
     function getMonthlySales(data) {
       const totals = data.reduce((acc, item) => {
         if (!item || !item.DATE_CREATED || item.ORDER_QTY == null) return acc;
@@ -451,6 +453,7 @@
       ]
     };
 
+    // Build Chart.js options dynamically based on mode.
     function createChartOptions(mode) {
       const maxValue = Math.max(...aggregatedSales.values, 10);
       const shared = {
@@ -510,6 +513,7 @@
       return shared;
     }
 
+    // Build datasets for the current mode; future mode can include goal lines.
     function createChartDatasets(mode) {
       const palette = {
         normal: {
@@ -571,6 +575,7 @@
     const ctx = document.getElementById('chart_BWBBarChart_chartcan').getContext('2d');
     let chartInstance = null;
 
+    // Render the Chart.js chart and recreate it when the mode or toggles change.
     function renderChart(mode) {
       const config = {
         type: 'bar',
@@ -588,6 +593,7 @@
       chartInstance = new Chart(ctx, config);
     }
 
+    // Switch between UI modes and update the chart.
     function setMode(mode) {
       body.classList.toggle('future-mode', mode === 'future');
       body.classList.toggle('normal-mode', mode === 'normal');
