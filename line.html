@@ -156,20 +156,19 @@
       }
 
       .hero {
-        padding: 32px 36px 24px;
+        padding: 16px 24px 12px;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
-        gap: 18px;
+        gap: 12px;
         flex-wrap: wrap;
       }
 
       .hero h1 {
         margin: 0;
-        font-size: clamp(2rem, 2.5vw, 2.75rem);
+        font-size: 1.75rem;
         line-height: 1.05;
       }
-
       .hero p {
         margin: 12px 0 0;
         max-width: 680px;
@@ -178,6 +177,33 @@
         line-height: 1.7;
       }
 
+      /* Future ideas section */
+      .future-ideas {
+        display: none;
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+
+      .future-ideas strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .future-ideas ul {
+        margin: 0;
+        padding-left: 18px;
+        columns: 2;
+        column-gap: 24px;
+      }
+
+      .future-ideas li {
+        margin-bottom: 2px;
+      }
+
+      .future-mode .future-ideas {
+        display: block;
+      }
       .controls {
         display: flex;
         gap: 12px;
@@ -407,13 +433,23 @@
       <div class="hero">
         <div>
           <h1>Chart.js Demo</h1>
-          <p>
-            * modify the query to: - overlay moving average overlay 3, 6, 12
-            month - overlay previous year to current year/period -
-            Month-over-month growth percetage - Forecast future months -
-            Anomoaly detection - highlight unusual months - confidence bands
-            around the trend using Oracle regression functions
+          <p class="hero-description">
           </p>
+          <div class="future-ideas">
+            <strong>Future Ideas</strong>
+            <ul>
+              <li>3 month moving average</li>
+              <li>6 month moving average</li>
+              <li>12 month moving average</li>
+              <li>Previous year overlay</li>
+              <li>Month-over-month growth %</li>
+              <li>Forecast future periods</li>
+              <li>Anomaly detection</li>
+              <li>Confidence bands</li>
+              <li>Database-driven goals</li>
+              <li>Goal performance zones</li>
+            </ul>
+          </div>
         </div>
 
         <div class="controls" role="group" aria-label="Chart mode selector">
@@ -824,6 +860,31 @@
             yRedMax,
             chartRight - chartLeft,
             chartBottom - yRedMax,
+          );
+
+          // Zone Labels
+          ctx.font = "bold 13px Arial";
+
+          // Above Goal
+          ctx.fillStyle = "rgba(60,60,60,0.85)";
+          ctx.fillText(
+            "ABOVE GOAL",
+            chartRight - 110,
+            chartTop + (yGoal - chartTop) / 2,
+          );
+
+          // 80-100%
+          ctx.fillText(
+            "80%-100% GOAL",
+            chartRight - 110,
+            yGoal + (yRedMax - yGoal) / 2,
+          );
+
+          // Below Goal
+          ctx.fillText(
+            "BELOW GOAL",
+            chartRight - 110,
+            yRedMax + (chartBottom - yRedMax) / 2,
           );
 
           ctx.restore();
