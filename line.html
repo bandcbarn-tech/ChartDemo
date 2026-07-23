@@ -447,7 +447,7 @@
         <div class="goal-control">
           <label>
             <input id="fixedGoalLineToggle" type="checkbox" />
-            Fixed goal line (425) 
+            Fixed goal line (425)
           </label>
           <label>
             <input id="averageGoalLineToggle" type="checkbox" />
@@ -456,6 +456,10 @@
           <label>
             <input id="trendLineToggle" type="checkbox" />
             Trend line
+          </label>
+          <label>
+            <input id="goalZoneToggle" type="checkbox" />
+            Goal performance zones
           </label>
         </div>
       </div>
@@ -492,6 +496,7 @@
       const fixedGoalLineToggle = document.getElementById(
         "fixedGoalLineToggle",
       );
+      const goalZoneToggle = document.getElementById("goalZoneToggle");
       const averageGoalLineToggle = document.getElementById(
         "averageGoalLineToggle",
       );
@@ -519,6 +524,7 @@
       const minDate = new Date("2023-01-01T00:00:00Z");
       const maxDate = new Date("2026-04-30T23:59:59Z");
       let fixedGoalLineEnabled = false;
+      let goalZoneEnabled = false;
       let averageGoalLineEnabled = false;
       let trendLineEnabled = trendLineToggle.checked;
       let smoothnessValue = Number(smoothnessSlider.value);
@@ -772,7 +778,7 @@
             return;
           }
 
-          if (!fixedGoalLineEnabled) {
+          if (!goalZoneEnabled) {
             return;
           }
 
@@ -863,6 +869,13 @@
         }
       });
 
+      goalZoneToggle.addEventListener("change", () => {
+        goalZoneEnabled = goalZoneToggle.checked;
+
+        if (body.classList.contains("future-mode")) {
+          renderChart("future");
+        }
+      });
       averageGoalLineToggle.addEventListener("change", () => {
         averageGoalLineEnabled = averageGoalLineToggle.checked;
         if (body.classList.contains("future-mode")) {
