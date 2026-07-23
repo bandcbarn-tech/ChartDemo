@@ -1,300 +1,358 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="js no-touch">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chart Demo — Pie Chart</title>
-  <style>
-    :root {
-      --bg: #f7f7f9;
-      --panel: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --accent: #2563eb;
-      --border: #d1d5db;
-      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chart Demo — Pie Chart</title>
+    <style>
+      :root {
+        --bg: #f7f7f9;
+        --panel: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --border: #d1d5db;
+        --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #eef2ff 0%, #f7f7f9 55%, #ffffff 100%);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-    }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: linear-gradient(
+          180deg,
+          #eef2ff 0%,
+          #f7f7f9 55%,
+          #ffffff 100%
+        );
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+      }
 
-    body.normal-mode {
-      background: #ffffff;
-      color: #111827;
-    }
+      body.normal-mode {
+        background: #ffffff;
+        color: #111827;
+      }
 
-    body.normal-mode .page {
-      width: 100%;
-      max-width: none;
-      background: transparent;
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
-    }
+      body.normal-mode .page {
+        width: 95vw;
+        max-width: 1400px;
+      }
 
-    body.normal-mode .hero {
-      background: #ffffff;
-      border-bottom: 1px solid #d1d5db;
-      padding: 18px 24px 18px;
-      margin: 0;
-      border-radius: 0;
-      box-shadow: none;
-    }
+      body.normal-mode .hero {
+        background: #ffffff;
+        border-bottom: 1px solid #d1d5db;
+        padding: 18px 24px 18px;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
 
-    body.normal-mode .content {
-      padding: 0 24px 24px;
-    }
+      body.normal-mode .content {
+        padding: 0 24px 24px;
+      }
 
-    body.normal-mode .panel {
-      background: #ffffff;
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
-      padding: 0;
-      width: 100%;
-      max-width: none;
-      margin: 0;
-    }
+      body.normal-mode .panel {
+        background: #ffffff;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+      }
 
-    body.normal-mode .canvas-wrap {
-      padding: 0;
-      background: transparent;
-      border: none;
-      border-radius: 0;
-    }
+      body.normal-mode .canvas-wrap {
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+      }
 
-    body.normal-mode .note {
-      display: none;
-    }
+      body.normal-mode .note {
+        display: none;
+      }
 
-    body.normal-mode canvas {
-      border-radius: 6px;
-      background: white;
-    }
+      body.normal-mode canvas {
+        border-radius: 6px;
+        background: white;
+      }
 
-    body.future-mode {
-      background: radial-gradient(circle at top, rgba(99, 102, 241, 0.18), transparent 38%),
-                  radial-gradient(circle at right, rgba(56, 189, 248, 0.12), transparent 30%),
-                  linear-gradient(180deg, #020617 0%, #081124 100%);
-      color: var(--text);
-    }
+      body.future-mode {
+        background:
+          radial-gradient(
+            circle at top,
+            rgba(99, 102, 241, 0.18),
+            transparent 38%
+          ),
+          radial-gradient(
+            circle at right,
+            rgba(56, 189, 248, 0.12),
+            transparent 30%
+          ),
+          linear-gradient(180deg, #020617 0%, #081124 100%);
+        color: var(--text);
+      }
 
-    body.future-mode .page {
-      background: rgba(15, 23, 42, 0.82);
-      border-color: rgba(148, 163, 184, 0.18);
-      backdrop-filter: blur(18px);
-    }
+      body.future-mode .page {
+        width: 95vw;
+        max-width: 1600px;
 
-    body.future-mode .hero {
-      padding: 40px 44px 24px;
-    }
+        background: rgba(15, 23, 42, 0.82);
+        border-color: rgba(148, 163, 184, 0.18);
+        backdrop-filter: blur(18px);
+      }
 
-    body.future-mode .panel {
-      background: rgba(15, 23, 42, 0.75);
-      border-color: rgba(148, 163, 184, 0.16);
-      box-shadow: 0 24px 90px rgba(15, 23, 42, 0.25);
-      padding: 0;
-    }
+      body.future-mode .hero {
+        padding: 20px 24px 12px;
+      }
 
-    body.future-mode .canvas-wrap {
-      background: rgba(15, 23, 42, 0.35);
-      border-color: rgba(148, 163, 184, 0.22);
-      padding: 0;
-      width: 100%;
-      max-width: none;
-    }
+      body.future-mode .panel {
+        background: rgba(15, 23, 42, 0.75);
+        border-color: rgba(148, 163, 184, 0.16);
+        box-shadow: 0 24px 90px rgba(15, 23, 42, 0.25);
+        padding: 0;
+      }
 
-    body.future-mode .controls button:not(.active) {
-      background: rgba(255, 255, 255, 0.08);
-      color: #e2e8f0;
-      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
-    }
+      body.future-mode .canvas-wrap {
+        background: rgba(15, 23, 42, 0.35);
+        border-color: rgba(148, 163, 184, 0.22);
+        padding: 0;
+        width: 100%;
+        max-width: none;
+      }
 
-    body.future-mode .controls button.active {
-      background: linear-gradient(135deg, #7c3aed, #38bdf8);
-      color: white;
-      box-shadow: 0 18px 30px rgba(56, 189, 248, 0.2);
-    }
+      body.future-mode .controls button:not(.active) {
+        background: rgba(255, 255, 255, 0.08);
+        color: #e2e8f0;
+        box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+      }
 
-    body.future-mode .note,
-    body.future-mode .hero p {
-      color: #94a3b8;
-    }
+      body.future-mode .controls button.active {
+        background: linear-gradient(135deg, #7c3aed, #38bdf8);
+        color: white;
+        box-shadow: 0 18px 30px rgba(56, 189, 248, 0.2);
+      }
 
-    .page {
-      width: min(1080px, 100%);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+      body.future-mode .note,
+      body.future-mode .hero p {
+        color: #94a3b8;
+      }
 
-    .hero {
-      padding: 32px 36px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
+      .page {
+        width: min(1080px, 100%);
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(2rem, 2.5vw, 2.75rem);
-    }
+      .hero {
+        padding: 32px 36px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
 
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.7;
-    }
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(2rem, 2.5vw, 2.75rem);
+      }
 
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px;
-    }
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
 
-    .controls button,
-    .controls a {
-      border: none;
-      border-radius: 999px;
-      font: inherit;
-      cursor: pointer;
-      padding: 14px 22px;
-      background: #f3f4f6;
-      color: var(--text);
-      text-decoration: none;
-    }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
 
-    .controls button.active {
-      background: var(--accent);
-      color: white;
-    }
+      .controls button,
+      .controls a {
+        border: none;
+        border-radius: 999px;
+        font: inherit;
+        cursor: pointer;
+        padding: 14px 22px;
+        background: #f3f4f6;
+        color: var(--text);
+        text-decoration: none;
+      }
 
-    .goal-control {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      margin-top: 16px;
-      color: var(--text);
-    }
+      .controls button.active {
+        background: var(--accent);
+        color: white;
+      }
 
-    .goal-control label {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
+      .goal-control {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 16px;
+        color: var(--text);
+      }
 
-    .goal-control input {
-      width: 16px;
-      height: 16px;
-    }
+      .goal-control label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
 
-    .content {
-      display: grid;
-      padding: 0 36px 24px;
-      gap: 24px;
-    }
+      .goal-control input {
+        width: 16px;
+        height: 16px;
+      }
 
-    .panel {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.05);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+      .content {
+        display: grid;
+        padding: 0 16px 16px;
+        gap: 16px;
+      }
 
-    .panel h2 {
-      margin: 0 0 16px;
-      font-size: 1.15rem;
-    }
+      .panel {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        padding: 20px;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.05);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-    .canvas-wrap {
-      position: relative;
-      padding: 12px;
-      border-radius: 20px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      min-height: 360px;
-    }
+      .panel h2 {
+        margin: 0 0 16px;
+        font-size: 1.15rem;
+      }
 
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-      border-radius: 16px;
-      background: white;
-    }
+      .canvas-wrap {
+        position: relative;
+        height: 500px;
+        padding: 12px;
+        border-radius: 20px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+      }
 
-    .note {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.65;
-    }
-  </style>
-</head>
-<body class="normal-mode">
-  <div class="page" id="pageRoot">
-    <div class="hero">
-      <div>
-        <h1>Pie Chart Demo</h1>
-        <p>Same monthly dataset visualized as a pie chart. Future mode uses the same page styling.</p>
-      </div>
+      #chart_BWBBarChart {
+        height: 500px;
+      }
 
-      <div class="controls" role="group" aria-label="Chart mode selector">
-        <button id="normalBtn" class="active" type="button">Normal</button>
-        <button id="futureBtn" type="button">Future</button>
-        <a href="index.html">Back to charts</a>
-      </div>
-      <div class="goal-control">
-        <label>
-          <input id="fixedGoalLineToggle" type="checkbox" />
-          Fixed goal line (425)
-        </label>
-        <label>
-          <input id="averageGoalLineToggle" type="checkbox" />
-          Average monthly total
-        </label>
-      </div>
-    </div>
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+        border-radius: 16px;
+        background: white;
+      }
 
-    <div class="content">
-      <section class="panel">
-        <h2>Sales chart</h2>
-        <div id="chart_BWBBarChart" class="canvas-wrap">
-          <canvas id="chart_BWBBarChart_chartcan" aria-label="Sales chart" role="img"></canvas>
+      .note {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.65;
+      }
+
+      .legend-control {
+        display: none;
+        align-items: center;
+        gap: 8px;
+      }
+      body.future-mode .legend-control {
+        display: inline-flex;
+      }
+      .controls select {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font: inherit;
+        background: #f3f4f6;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      body.future-mode .controls select {
+        background: rgba(255, 255, 255, 0.08);
+        color: #e2e8f0;
+        box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+      }
+    </style>
+  </head>
+  <body class="normal-mode">
+    <div class="page" id="pageRoot">
+      <div class="hero">
+        <div>
+          <h1>Pie Chart Demo</h1>
+          <p>
+            Same monthly dataset visualized as a pie chart. Future mode uses the
+            same page styling.
+          </p>
         </div>
-        <p class="note">Goal toggles are hidden on pie charts because they do not apply to slice visualizations.</p>
-      </section>
-    </div>
-  </div>
+        <div class="controls" role="group" aria-label="Chart mode selector">
+          <button id="normalBtn" class="active" type="button">Normal</button>
+          <button id="futureBtn" type="button">Future</button>
+          <a href="index.html">Back to charts</a>
 
-  <script>
-    window.CHART_TYPE = 'pie';
-    window.PAGE_TITLE = 'Pie Chart Demo';
-    window.SHOW_GOAL_TOGGLES = false;
-  </script>
-  <script src="js/chart.js"></script>
-  <script src="dml_order_line.js"></script>
-  <script src="js/chart-page.js"></script>
-</body>
+          <div class="legend-control">
+            <label for="legendPositionSelect">Legend:</label>
+            <select id="legendPositionSelect">
+              <option value="default" selected>Default</option>
+              <option value="top">Top</option>
+              <option value="left">Left</option>
+              <option value="bottom">Bottom</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+        </div>
+        <!-- controls -->
+      </div>
+      <!-- hero -->
+      <div class="content">
+        <section class="panel">
+          <h2>Sales chart</h2>
+          <div id="chart_BWBBarChart" class="canvas-wrap">
+            <canvas
+              id="chart_BWBBarChart_chartcan"
+              aria-label="Sales chart"
+              role="img"
+            ></canvas>
+          </div>
+          <p class="note">
+            Goal toggles are hidden on pie charts because they do not apply to
+            slice visualizations.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      window.CHART_TYPE = "pie";
+      window.PAGE_TITLE = "Pie Chart Demo";
+      window.SHOW_GOAL_TOGGLES = false;
+    </script>
+    <script src="js/chart.js"></script>
+    <script src="dml_order_line.js"></script>
+    <script src="js/chart-page.js"></script>
+  </body>
 </html>
