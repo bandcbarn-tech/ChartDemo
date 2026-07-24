@@ -291,11 +291,26 @@
         color: var(--text);
         cursor: pointer;
       }
-
+      .future-chart-controls {
+        display: none;
+      }
+      body.future-mode .future-chart-controls {
+        color: #e2e8f0;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
       body.future-mode .controls select {
         background: rgba(255, 255, 255, 0.08);
         color: #e2e8f0;
         box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+      }
+      body.future-mode .future-chart-controls label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #e2e8f0;
+        white-space: nowrap;
       }
     </style>
   </head>
@@ -317,13 +332,45 @@
           <div class="legend-control">
             <label for="legendPositionSelect">Legend:</label>
             <select id="legendPositionSelect">
-              <option value="top" selected>Default</option>
+              <option value="top" selected>Top</option>
               <option value="left">Left</option>
               <option value="bottom">Bottom</option>
               <option value="right">Right</option>
             </select>
           </div>
+
+          <div class="future-chart-controls">
+            <label>
+              <input id="doughnutToggle" type="checkbox" />
+              Doughnut mode
+            </label>
+            <div class="future-chart-controls">
+              <label>
+                <input id="explodeLargestToggle" type="checkbox" />
+                Highlight largest slice
+              </label>
+            </div>
+            <div class="future-chart-controls">
+              <label for="topNSlicesSelect">Show:</label>
+              <select id="topNSlicesSelect">
+                <option value="all" selected>All</option>
+                <option value="5">Top 5</option>
+                <option value="10">Top 10</option>
+                <option value="15">Top 15</option>
+              </select>
+            </div>
+            <div class="future-chart-controls">
+              <label for="sortOrderSelect">Sort:</label>
+
+              <select id="sortOrderSelect">
+                <option value="chronological" selected>Chronological</option>
+                <option value="largest">Largest First</option>
+                <option value="smallest">Smallest First</option>
+              </select>
+            </div>
+          </div>
         </div>
+        div>
         <!-- controls -->
       </div>
       <!-- hero -->

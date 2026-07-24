@@ -13,6 +13,14 @@ const goalControl = document.querySelector(".goal-control");
 const body = document.body;
 const legendPositionSelect = document.getElementById("legendPositionSelect");
 let legendPosition = "top";
+const doughnutToggle = document.getElementById("doughnutToggle");
+let doughnutEnabled = false;
+const explodeLargestToggle = document.getElementById("explodeLargestToggle");
+let explodeLargestEnabled = false;
+const topNSlicesSelect = document.getElementById("topNSlicesSelect");
+let topNSlices = "all";
+const sortOrderSelect = document.getElementById("sortOrderSelect");
+let sortOrder = "chronological";
 
 const monthNames = [
   "Jan",
@@ -158,7 +166,7 @@ function createChartOptions(mode) {
       display: true,
       position: legendPosition,
       labels: {
-        fontColor: mode === "future" ? "#e2e8f0" : "#374151",
+        fontColor: mode === "future" ? "#000000" : "#374151",
         usePointStyle: true,
         padding: 16,
       },
@@ -181,18 +189,28 @@ function createChartOptions(mode) {
       yPadding: 12,
 
       callbacks: {
+        title: function (tooltipItems, data) {
+          return data.labels[tooltipItems[0].index];
+        },
+
         label: function (tooltipItem, data) {
-          return (
-            data.datasets[tooltipItem.datasetIndex].label +
-            ": " +
-            data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+          const value =
+            data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+          const total = data.datasets[tooltipItem.datasetIndex].data.reduce(
+            (sum, current) => sum + Number(current),
+            0,
           );
+
+          const percentage = ((value / total) * 100).toFixed(1);
+
+          return [value.toLocaleString() + " Units", percentage + "% of Total"];
         },
       },
     },
   };
 
-  if (chartType !== "pie") {
+  if (chartType !== "pie" && chartType !== "doughnut") {
     shared.scales = {
       x: {
         grid: {
@@ -221,10 +239,63 @@ function createChartOptions(mode) {
       },
     };
   } else {
-
   }
 
   return shared;
+}
+
+function getFilteredPieData() {
+  if (chartType !== "pie" && chartType !== "doughnut") {
+    return {
+      labels: chartData.labels,
+      values: chartData.datasets[0].data,
+    };
+  }
+
+  const count = Number(topNSlices);
+
+  const entries = chartData.labels.map((label, index) => ({
+    label,
+    value: chartData.datasets[0].data[index],
+  }));
+  if (sortOrder === "largest") {
+    entries.sort((a, b) => b.value - a.value);
+  } else if (sortOrder === "smallest") {
+    entries.sort((a, b) => a.value - b.value);
+  }
+
+  if (topNSlices === "all") {
+    return {
+      labels: entries.map((item) => item.label),
+      values: entries.map((item) => item.value),
+    };
+  }
+
+  let rankedEntries = [...entries];
+
+  if (sortOrder === "chronological") {
+    rankedEntries.sort((a, b) => b.value - a.value);
+  }
+
+  const topEntries = rankedEntries.slice(0, count);
+
+  const otherTotal = entries
+    .slice(count)
+    .reduce((sum, item) => sum + item.value, 0);
+
+  const labels = topEntries.map((item) => item.label);
+
+  const values = topEntries.map((item) => item.value);
+
+  if (otherTotal > 0) {
+    labels.push("Other");
+    values.push(otherTotal);
+  }
+
+  return {
+    labels,
+    values,
+  };
 }
 
 function createChartDatasets(mode) {
@@ -242,7 +313,12 @@ function createChartDatasets(mode) {
   const style = palette[mode] || palette.normal;
   const datasets = [];
 
-  if (chartType === "pie") {
+  if (chartType === "pie" || chartType === "doughnut") {
+    const pieData = getFilteredPieData();
+
+    const maxValue = Math.max(...chartData.datasets[0].data);
+    const largestIndex = chartData.datasets[0].data.indexOf(maxValue);
+
     const paletteColors = [
       "#38bdf8",
       "#a855f7",
@@ -257,13 +333,21 @@ function createChartDatasets(mode) {
     ];
     datasets.push({
       label: "Total Items Sold",
-      data: chartData.datasets[0].data,
-      backgroundColor: chartData.labels.map(
+      data: pieData.values,
+      backgroundColor: pieData.labels.map(
         (_, index) => paletteColors[index % paletteColors.length],
       ),
       borderColor: "#0f172a",
       borderWidth: 1,
       hoverOffset: 6,
+
+      offset: chartData.labels.map((_, index) =>
+        explodeLargestEnabled &&
+        body.classList.contains("future-mode") &&
+        index === largestIndex
+          ? 25
+          : 0,
+      ),
     });
   } else {
     datasets.push({
@@ -326,13 +410,25 @@ const ctx = document
 let chartInstance = null;
 
 function renderChart(mode) {
+  const pieData = getFilteredPieData();
   const config = {
-    type: chartType,
+    type:
+      body.classList.contains("future-mode") &&
+      doughnutEnabled &&
+      chartType === "pie"
+        ? "doughnut"
+        : chartType,
     data: {
-      labels: chartData.labels,
+      labels:
+        chartType === "pie" || chartType === "doughnut"
+          ? pieData.labels
+          : chartData.labels,
       datasets: createChartDatasets(mode),
     },
     options: createChartOptions(mode),
+
+    cutoutPercentage:
+      body.classList.contains("future-mode") && doughnutEnabled ? 60 : 0,
   };
 
   if (chartInstance) {
@@ -377,6 +473,34 @@ if (legendPositionSelect) {
       legendPositionSelect.value === "default"
         ? "right"
         : legendPositionSelect.value;
+
+    renderChart(body.classList.contains("future-mode") ? "future" : "normal");
+  });
+}
+if (doughnutToggle) {
+  doughnutToggle.addEventListener("change", () => {
+    doughnutEnabled = doughnutToggle.checked;
+
+    renderChart(body.classList.contains("future-mode") ? "future" : "normal");
+  });
+}
+if (explodeLargestToggle) {
+  explodeLargestToggle.addEventListener("change", () => {
+    explodeLargestEnabled = explodeLargestToggle.checked;
+
+    renderChart(body.classList.contains("future-mode") ? "future" : "normal");
+  });
+}
+if (topNSlicesSelect) {
+  topNSlicesSelect.addEventListener("change", () => {
+    topNSlices = topNSlicesSelect.value;
+
+    renderChart(body.classList.contains("future-mode") ? "future" : "normal");
+  });
+}
+if (sortOrderSelect) {
+  sortOrderSelect.addEventListener("change", () => {
+    sortOrder = sortOrderSelect.value;
 
     renderChart(body.classList.contains("future-mode") ? "future" : "normal");
   });
