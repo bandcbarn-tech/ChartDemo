@@ -21,7 +21,11 @@ const topNSlicesSelect = document.getElementById("topNSlicesSelect");
 let topNSlices = "all";
 const sortOrderSelect = document.getElementById("sortOrderSelect");
 let sortOrder = "chronological";
+const showValuesInLegendToggle = document.getElementById(
+  "showValuesInLegendToggle",
+);
 
+let showValuesInLegend = false;
 const monthNames = [
   "Jan",
   "Feb",
@@ -151,6 +155,20 @@ const chartData = {
   ],
 };
 
+function getLegendLabels() {
+  const pieData = getFilteredPieData();
+
+  if (!showValuesInLegend) {
+    return pieData.labels;
+  }
+
+  return pieData.labels.map((label, index) => {
+    const value = pieData.values[index];
+
+    return `${label} (${value.toLocaleString()})`;
+  });
+}
+
 function createChartOptions(mode) {
   const maxValue = Math.max(...aggregatedSales.values, 10);
   const shared = {
@@ -189,8 +207,10 @@ function createChartOptions(mode) {
       yPadding: 12,
 
       callbacks: {
-        title: function (tooltipItems, data) {
-          return data.labels[tooltipItems[0].index];
+        title: function (tooltipItems) {
+          const pieData = getFilteredPieData();
+
+          return pieData.labels[tooltipItems[0].index];
         },
 
         label: function (tooltipItem, data) {
@@ -421,7 +441,7 @@ function renderChart(mode) {
     data: {
       labels:
         chartType === "pie" || chartType === "doughnut"
-          ? pieData.labels
+          ? getLegendLabels()
           : chartData.labels,
       datasets: createChartDatasets(mode),
     },
@@ -505,5 +525,11 @@ if (sortOrderSelect) {
     renderChart(body.classList.contains("future-mode") ? "future" : "normal");
   });
 }
+if (showValuesInLegendToggle) {
+  showValuesInLegendToggle.addEventListener("change", () => {
+    showValuesInLegend = showValuesInLegendToggle.checked;
 
+    renderChart(body.classList.contains("future-mode") ? "future" : "normal");
+  });
+}
 setMode("normal");
