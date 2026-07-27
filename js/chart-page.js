@@ -458,6 +458,39 @@ function renderChart(mode) {
   chartInstance = new Chart(ctx, config);
 }
 
+document.getElementById("chart_BWBBarChart_chartcan").onclick = function (evt) {
+  const activePoints = chartInstance.getElementsAtEvent(evt);
+
+  if (!activePoints.length) {
+    return;
+  }
+
+  const sliceIndex = activePoints[0]._index;
+
+  const pieData = getFilteredPieData();
+
+  const label = pieData.labels[sliceIndex];
+
+  const value = pieData.values[sliceIndex];
+
+  alert(
+    "Clicked: " +
+      label +
+      "\n" +
+      "Units: " +
+      value.toLocaleString() +
+      "\n\n" +
+      "Possible actions:\n\n" +
+      "1. Open a URL\n" +
+      "2. Call an API\n" +
+      "3. Launch a drill-down chart\n" +
+      "4. Filter another chart\n" +
+      "5. Open a modal\n" +
+      "6. Navigate to another page\n" +
+      "7. Trigger a custom JavaScript function",
+  );
+};
+
 function setMode(mode) {
   body.classList.toggle("future-mode", mode === "future");
   body.classList.toggle("normal-mode", mode === "normal");
